@@ -197,6 +197,21 @@ func (kc *kubernetesCluster) GetAllNodes(ctx context.Context) (map[string]v1.Nod
 	return nodeMap, err
 }
 
+func (kc *kubernetesCluster) GetNodes(ctx context.Context, opts metav1.ListOptions) (map[string]v1.Node, error) {
+	nodeList, err := kc.kubeclient.CoreV1().Nodes().List(ctx, opts)
+
+	if err != nil {
+		return nil, err
+	}
+
+	nodeMap := make(map[string]v1.Node)
+	for _, node := range nodeList.Items {
+		nodeMap[node.Name] = node
+	}
+
+	return nodeMap, err
+}
+
 func (kc *kubernetesCluster) GetNodeUnfinishedPods(ctx context.Context, nodeName string) (*v1.PodList, error) {
 	fieldSelector, err := fields.ParseSelector("spec.nodeName=" + nodeName +
 		",status.phase!=" + string(v1.PodSucceeded) +

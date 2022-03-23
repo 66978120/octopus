@@ -19,8 +19,6 @@ service PlatformTrainJobService {
   rpc TrainJobList(PlatformTrainJobListRequest) returns (PlatformTrainJobListReply);
   //获取训练任务统计信息
   rpc TrainJobStastics(TrainJobStasticsRequest) returns (TrainJobStasticsReply);
-  //获取集群资源信息
-  rpc PlatformResources(PlatformResourcesRequest) returns (PlatformResourcesReply);
 }
 
 
@@ -201,20 +199,4 @@ message TrainJobStasticsReply {
   //等待数量
   int64 waitingSize = 6;
 
-}
-
-message PlatformNode {
-  string nodeName = 1;
-  string ip = 2;
-  string status = 3;
-  map<string,string> capacity = 4;
-  map<string,string> allocated = 5;
-}
-
-message PlatformResourcesRequest {
-  string resourcePool = 1;
-}
-
-message PlatformResourcesReply {
-  repeated PlatformNode resources = 1;
 }

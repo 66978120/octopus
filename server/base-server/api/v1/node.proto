@@ -7,7 +7,7 @@ package baseserver.api.v1;
 option go_package = "server/base-server/api/v1;v1";
 
 service NodeService {
-  rpc ListNode(google.protobuf.Empty) returns (NodeList);
+  rpc ListNode(ListNodeRequest) returns (NodeList);
 }
 
 message Node {
@@ -21,4 +21,8 @@ message Node {
 
 message NodeList {
   repeated Node nodes = 1;
+}
+
+message ListNodeRequest {
+  string resourcePool = 1;
 }

@@ -18,6 +18,7 @@ import (
 type Data struct {
 	PlatformClient         api.PlatformServiceClient
 	PlatformTrainJobClient api.PlatformTrainJobServiceClient
+	NodeClient             api.NodeServiceClient
 }
 
 func NewData(confData *conf.Data) (*Data, error) {
@@ -45,5 +46,6 @@ func NewData(confData *conf.Data) (*Data, error) {
 	return &Data{
 		PlatformClient:         api.NewPlatformServiceClient(conn),
 		PlatformTrainJobClient: api.NewPlatformTrainJobServiceClient(conn),
+		NodeClient:             api.NewNodeServiceClient(conn),
 	}, nil
 }

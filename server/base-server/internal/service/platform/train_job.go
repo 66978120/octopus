@@ -2,7 +2,6 @@ package platform
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
 	api "server/base-server/api/v1"
 	"server/base-server/internal/common"
@@ -648,111 +647,6 @@ func (s *platformTrainJobService) PipelineCallback(ctx context.Context, req *com
 	}
 
 	return common.PipeLineCallbackOK
-}
-
-func (s *platformTrainJobService) PlatformResources(ctx context.Context, req *api.PlatformResourcesRequest) (*api.PlatformResourcesReply, error) {
-
-	resNodeList := &api.PlatformResourcesReply{
-		Resources: []*api.PlatformNode{},
-	}
-
-	allNodeMap, err := s.getNodesByResourcePool(ctx, req.ResourcePool)
-
-	if err != nil {
-		return nil, errors.Errorf(err, errors.ErrorListNode)
-	}
-
-	for nodename, node := range allNodeMap {
-		resNode := &api.PlatformNode{
-			NodeName:  nodename,
-			Status:    "NotReady",
-			Capacity:  make(map[string]string),
-			Allocated: make(map[string]string),
-		}
-
-		for _, addr := range node.Status.Addresses {
-			if addr.Type == "InternalIP" {
-				resNode.Ip = addr.Address
-				break
-			}
-		}
-
-		for _, cond := range node.Status.Conditions {
-			if cond.Type == "Ready" && cond.Status == "True" {
-				resNode.Status = "Ready"
-				break
-			}
-		}
-
-		for resname, quantity := range node.Status.Capacity {
-			quantityStr := quantity.String()
-			if quantityStr != "0" &&
-				!strings.Contains(s.conf.Service.Resource.IgnoreSystemResources, resname.String()) {
-				resNode.Capacity[resname.String()] = quantityStr
-
-			}
-		}
-
-		allocatedResourceMap := make(map[string]*resource.Quantity)
-		pods, err := s.data.Cluster.GetNodeUnfinishedPods(ctx, nodename)
-		if err != nil {
-			return nil, errors.Errorf(err, errors.ErrorListNode)
-		}
-
-		for _, pod := range pods.Items {
-			for _, container := range pod.Spec.Containers {
-				for resname, quantity := range container.Resources.Requests {
-					if _, ok := allocatedResourceMap[resname.String()]; !ok {
-						newQ := quantity.DeepCopy()
-						allocatedResourceMap[resname.String()] = &newQ
-					} else {
-						allocatedResourceMap[resname.String()].Add(quantity)
-					}
-				}
-			}
-		}
-
-		for resname, quantity := range allocatedResourceMap {
-			if !strings.Contains(s.conf.Service.Resource.IgnoreSystemResources, resname) {
-				resNode.Allocated[resname] = quantity.String()
-			}
-		}
-
-		for resname := range resNode.Capacity {
-			if _, ok := resNode.Allocated[resname]; !ok {
-				resNode.Allocated[resname] = "0"
-			}
-		}
-
-		resNodeList.Resources = append(resNodeList.Resources, resNode)
-	}
-
-	return resNodeList, nil
-}
-
-func (s *platformTrainJobService) getNodesByResourcePool(ctx context.Context, resourcePool string) (map[string]v1.Node, error) {
-
-	nodeMap := make(map[string]v1.Node)
-	rPoolBindingNodeLabelKeyFormat := s.conf.Service.Resource.PoolBindingNodeLabelKeyFormat
-	rPoolBindingNodeLabelKey := fmt.Sprintf(rPoolBindingNodeLabelKeyFormat, resourcePool)
-	nodeListBytes, err := s.data.Cluster.ListNode(ctx, rPoolBindingNodeLabelKey)
-	if err != nil {
-		return nodeMap, errors.Errorf(err, errors.ErrorListResourcePool)
-	}
-
-	nodeList := &v1.NodeList{}
-	err = json.Unmarshal(nodeListBytes, nodeList)
-
-	if err != nil {
-		return nodeMap, errors.Errorf(err, errors.ErrorListResourcePool)
-	}
-
-	for _, node := range nodeList.Items {
-		nodeMap[node.Name] = node
-	}
-
-	return nodeMap, err
-
 }
 
 func (s *platformTrainJobService) TrainJobStastics(ctx context.Context, req *api.TrainJobStasticsRequest) (*api.TrainJobStasticsReply, error) {

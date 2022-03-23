@@ -10,7 +10,8 @@ import (
 	"server/common/log"
 	"strings"
 
-	"github.com/golang/protobuf/ptypes/empty"
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	"k8s.io/apimachinery/pkg/api/resource"
 )
 
@@ -29,12 +30,20 @@ func NewNodeService(conf *conf.Bootstrap, logger log.Logger, data *data.Data) ap
 	}
 }
 
-func (nsvc *NodeService) ListNode(ctx context.Context, req *empty.Empty) (*api.NodeList, error) {
+func (nsvc *NodeService) ListNode(ctx context.Context, req *api.ListNodeRequest) (*api.NodeList, error) {
 	resNodeList := &api.NodeList{
 		Nodes: []*api.Node{},
 	}
 
-	allNodeMap, err := nsvc.data.Cluster.GetAllNodes(ctx)
+	rPoolBindingNodeLabelKey := ""
+	if req.ResourcePool != "" {
+		rPoolBindingNodeLabelKeyFormat := nsvc.conf.Service.Resource.PoolBindingNodeLabelKeyFormat
+		rPoolBindingNodeLabelKey = fmt.Sprintf(rPoolBindingNodeLabelKeyFormat, req.ResourcePool)
+	}
+
+	allNodeMap, err := nsvc.data.Cluster.GetNodes(ctx, metav1.ListOptions{
+		LabelSelector: rPoolBindingNodeLabelKey,
+	})
 
 	if err != nil {
 		return nil, errors.Errorf(err, errors.ErrorListNode)

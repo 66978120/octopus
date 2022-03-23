@@ -165,11 +165,21 @@ func (s *TrainJobService) PlatformResources(ctx context.Context, req *empty.Empt
 	if err != nil {
 		return nil, err
 	}
-	innerReply, err := s.data.PlatformTrainJobClient.PlatformResources(ctx, &innerapi.PlatformResourcesRequest{ResourcePool: resourcePool})
+	innerReply, err := s.data.NodeClient.ListNode(ctx, &innerapi.ListNodeRequest{ResourcePool: resourcePool})
 	if err != nil {
 		return nil, err
 	}
 	reply := &api.PlatformResourcesReply{}
+	for _, node := range innerReply.Nodes {
+		reply.Resources = append(reply.Resources, &api.Node{
+			NodeName:  node.Name,
+			Ip:        node.Ip,
+			Status:    node.Status,
+			Capacity:  node.Capacity,
+			Allocated: node.Allocated,
+		})
+	}
+
 	err = copier.Copy(reply, innerReply)
 	if err != nil {
 		return nil, err

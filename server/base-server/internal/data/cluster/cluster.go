@@ -4,6 +4,8 @@ import (
 	"context"
 	"server/base-server/internal/common"
 
+	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
+
 	seldonv1 "github.com/seldonio/seldon-core/operator/apis/machinelearning.seldon.io/v1"
 
 	nav1 "nodeagent/apis/agent/v1"
@@ -26,6 +28,7 @@ type Cluster interface {
 	ClusterClient
 	GetClusterConfig() *rest.Config
 	GetAllNodes(ctx context.Context) (map[string]v1.Node, error)
+	GetNodes(ctx context.Context, opts metav1.ListOptions) (map[string]v1.Node, error)
 	GetNodeUnfinishedPods(ctx context.Context, nodeName string) (*v1.PodList, error)
 	CreateService(ctx context.Context, service *v1.Service) error
 	DeleteService(ctx context.Context, namespace string, name string) error

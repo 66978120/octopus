@@ -9,6 +9,8 @@ import (
 	"server/common/errors"
 	"server/common/log"
 
+	innerapi "server/base-server/api/v1"
+
 	"github.com/golang/protobuf/ptypes/empty"
 )
 
@@ -28,7 +30,7 @@ func NewNodeService(conf *conf.Bootstrap, logger log.Logger, data *data.Data) ap
 }
 
 func (nsvc *NodeService) ListNode(ctx context.Context, req *empty.Empty) (*api.NodeList, error) {
-	reply, err := nsvc.data.NodeClient.ListNode(ctx, &empty.Empty{})
+	reply, err := nsvc.data.NodeClient.ListNode(ctx, &innerapi.ListNodeRequest{})
 
 	if err != nil {
 		return nil, err
