@@ -180,10 +180,6 @@ func (s *TrainJobService) PlatformResources(ctx context.Context, req *empty.Empt
 		})
 	}
 
-	err = copier.Copy(reply, innerReply)
-	if err != nil {
-		return nil, err
-	}
 	return reply, nil
 }
 
