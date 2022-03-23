@@ -1,0 +1,14 @@
+syntax = "proto3";
+
+package grampusserver.api.v1;
+
+option go_package = "server/grampus-server/api/v1;v1";
+
+
+
+import "google/api/annotations.proto";
+import "validate/validate.proto";
+
+service GrampusService {
+
+}

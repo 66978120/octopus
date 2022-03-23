@@ -1,0 +1,13 @@
+app:
+  name: grampusserver
+  version: v1.0
+  isDev: true #是否本地调试
+  logLevel: info
+server:
+  http:
+    addr: 127.0.0.1:8005
+    timeout: 30s
+data:
+  baseServerAddr: dns:///127.0.0.1:9001
+  baseServerRequestTimeout: 30s
+service:

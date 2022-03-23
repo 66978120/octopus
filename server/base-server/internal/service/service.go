@@ -9,16 +9,17 @@ import (
 	"server/base-server/internal/service/billing"
 	"server/base-server/internal/service/dataset"
 	"server/base-server/internal/service/develop"
+	"server/base-server/internal/service/grampus"
 	"server/base-server/internal/service/image"
 	"server/base-server/internal/service/jointcloud"
 	"server/base-server/internal/service/lable"
 	"server/base-server/internal/service/model"
+	"server/base-server/internal/service/modeldeploy"
 	"server/base-server/internal/service/platform"
 	"server/base-server/internal/service/resources"
 	"server/base-server/internal/service/trainjob"
 	"server/base-server/internal/service/user"
 	"server/base-server/internal/service/workspace"
-	"server/base-server/internal/service/modeldeploy"
 
 	"server/common/log"
 )
@@ -42,7 +43,8 @@ type Service struct {
 	PlatformService         api.PlatformServiceServer
 	PlatformTrainJobService platform.PlatformTrainJobService
 	JointCloudService       api.JointCloudServiceServer
-	ModelDeployService  api.ModelDeployServiceServer
+	ModelDeployService      api.ModelDeployServiceServer
+	GrampusService          api.GrampusServiceServer
 }
 
 func NewService(ctx context.Context, conf *conf.Bootstrap, logger log.Logger, data *data.Data) (*Service, error) {
@@ -95,6 +97,7 @@ func NewService(ctx context.Context, conf *conf.Bootstrap, logger log.Logger, da
 	if err != nil {
 		return nil, err
 	}
+	service.GrampusService = grampus.NewGrampusService(conf, data)
 
 	return service, nil
 }

@@ -21,3 +21,7 @@ dist/
 vendor/
 bin/
 node_modules/
+
+*.pb.go
+*.pb.validate.go
+*swagger.json
