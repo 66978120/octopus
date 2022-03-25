@@ -3,6 +3,7 @@ module server
 go 1.16
 
 require (
+	git.openi.org.cn/OpenI/Grampus/server v0.0.0-00010101000000-000000000000
 	github.com/antihax/optional v1.0.0
 	github.com/bsm/redislock v0.7.1
 	github.com/dgrijalva/jwt-go v3.2.0+incompatible
@@ -46,6 +47,7 @@ require (
 )
 
 replace (
+	git.openi.org.cn/OpenI/Grampus/server => git.openi.org.cn/openioctopus/Grampus/server v0.0.0-20220325062840-a1cb3f4fe194
 	k8s.io/api => k8s.io/api v0.19.11
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.19.11
 	k8s.io/apimachinery => k8s.io/apimachinery v0.19.11

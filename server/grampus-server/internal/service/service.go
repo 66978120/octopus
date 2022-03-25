@@ -1,17 +1,18 @@
 package service
 
 import (
-	api "server/grampus-server/api/v1"
 	"server/grampus-server/internal/conf"
 	"server/grampus-server/internal/data"
+
+	"git.openi.org.cn/OpenI/Grampus/server/adapter/api/v1"
 )
 
 type Service struct {
-	api.UnimplementedGrampusServiceServer
+	v1.UnimplementedAdapterServer
 	Data *data.Data
 }
 
-func NewService(conf *conf.Bootstrap, data *data.Data) api.GrampusServiceServer {
+func NewService(conf *conf.Bootstrap, data *data.Data) v1.AdapterServer {
 	service := &Service{
 		Data: data,
 	}

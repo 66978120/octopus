@@ -8,8 +8,9 @@ import (
 	"server/common/middleware/validate"
 
 	"server/common/errors"
-	v1 "server/grampus-server/api/v1"
 	"server/grampus-server/internal/conf"
+
+	v1 "git.openi.org.cn/OpenI/Grampus/server/adapter/api/v1"
 
 	comhttp "server/common/http"
 
@@ -24,7 +25,7 @@ type ResponseErr struct {
 }
 
 // NewHTTPServer new a HTTP server.
-func NewHTTPServer(c *conf.Server, service v1.GrampusServiceServer) *http.Server {
+func NewHTTPServer(c *conf.Server, service v1.AdapterServer) *http.Server {
 	var opts = []http.ServerOption{}
 	if c.Http.Network != "" {
 		opts = append(opts, http.Network(c.Http.Network))
@@ -58,23 +59,30 @@ func NewHTTPServer(c *conf.Server, service v1.GrampusServiceServer) *http.Server
 	}
 
 	srv := http.NewServer(opts...)
-	srv.HandlePrefix("/", v1.NewGrampusServiceHandler(service, options...))
+	srv.HandlePrefix("/", v1.NewAdapterHandler(service, options...))
 	return srv
 }
 
-func convertErrCode(e *errors.OctopusError) ResponseErr {
-	var errorCode ErrorCode
+var DefaultErrorMsg = map[v1.ErrorCode]string{
+	v1.ErrorCode_InternalError:           "internal error",
+	v1.ErrorCode_InvalidRequestParameter: "invalid request parameter",
+	v1.ErrorCode_AuthenticationFailed:    "authentication failed",
+	v1.ErrorCode_ApiNotSupport:           "api not support",
+}
+
+func convertErrCode(e *errors.OctopusError) v1.ErrorResponse {
+	var errorCode v1.ErrorCode
 	switch e.Code {
 	case errors.ErrorInvalidRequestParameter:
-		errorCode = ErrorCodeInternalError
+		errorCode = v1.ErrorCode_InternalError
 	case errors.ErrorAuthenticationFailed:
-		errorCode = ErrorAuthenticationFailed
+		errorCode = v1.ErrorCode_AuthenticationFailed
 	default:
-		errorCode = ErrorCodeInternalError
+		errorCode = v1.ErrorCode_InternalError
 	}
 
-	return ResponseErr{
-		ErrorCode: int(errorCode),
+	return v1.ErrorResponse{
+		ErrorCode: errorCode,
 		ErrorMsg:  DefaultErrorMsg[errorCode],
 	}
 }
