@@ -47,7 +47,7 @@ require (
 )
 
 replace (
-	git.openi.org.cn/OpenI/Grampus/server => git.openi.org.cn/openioctopus/Grampus/server v0.0.0-20220325062840-a1cb3f4fe194
+	git.openi.org.cn/OpenI/Grampus/server => git.openi.org.cn/openioctopus/Grampus/server v0.0.0-20220329013116-8de93acb27de
 	k8s.io/api => k8s.io/api v0.19.11
 	k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.19.11
 	k8s.io/apimachinery => k8s.io/apimachinery v0.19.11
