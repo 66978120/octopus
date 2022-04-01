@@ -4,7 +4,7 @@ import (
 	"server/grampus-server/internal/conf"
 	"server/grampus-server/internal/data"
 
-	"git.openi.org.cn/OpenI/Grampus/server/adapter/api/v1"
+	"git.openi.org.cn/OpenI/ClioneLimacina/server/adapter/api/v1"
 )
 
 type Service struct {

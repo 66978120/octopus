@@ -10,7 +10,7 @@ import (
 	"server/common/errors"
 	"server/grampus-server/internal/conf"
 
-	v1 "git.openi.org.cn/OpenI/Grampus/server/adapter/api/v1"
+	v1 "git.openi.org.cn/OpenI/ClioneLimacina/server/adapter/api/v1"
 
 	comhttp "server/common/http"
 
