@@ -142,6 +142,12 @@ baseserver:
     develop:
       jpyCommand: "jupyter lab --no-browser --ip=0.0.0.0 --allow-root --notebook-dir='/code' --port=8888 --LabApp.token='' --LabApp.allow_origin='*' --LabApp.base_url=$OCTOPUS_JPY_BASE_URL"
       autoStopIntervalSec: 7200
+    alluxio:
+      tieredstore:
+        levels:
+          - mediumtype: HDD
+            path: /tmp/alluxiocache
+            quota: 1Gi
   administrator:
     username: "admin"
     password: "123456"

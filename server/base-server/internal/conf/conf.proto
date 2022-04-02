@@ -130,6 +130,18 @@ message JointCloud {
   int32 sessionExpirySec = 4;
 }
 
+message Alluxio {
+  message Tieredstore {
+    repeated Level levels = 1;
+  }
+  message Level {
+    string mediumtype = 1;
+    string path = 2;
+    string quota = 3;
+  }
+  Tieredstore tieredstore = 1;
+}
+
 message Service {
   string baseServerAddr = 2;
   string dockerDatasetPath = 3;
@@ -140,6 +152,7 @@ message Service {
   string resourceLabelKey = 8;
   int64  billingPeriodSec = 9;
   string dockerModelDeployPath = 10;
+  Alluxio alluxio = 11;
 }
 
 message Administrator {
